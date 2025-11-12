@@ -309,24 +309,19 @@ h1, h2 {
     </div>
 
     <div class="right-column-wrapper">
-        
         <div id="splash-content" class="content-section">
             <div class="home-image-container">
                 <img src="images/level-cybersprint++.png" alt="Portfolio Splash Image">
             </div>
         </div>
-
-        <div id="static-footer">
-            <div style="height: 80px;"></div>
-            <p>&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; Design by artsandtoys.</p>
-            <br><br>
-            <p>&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; <a href="#"><b><i>Fin.</i></b></a></p>
-        </div>
-        
     </div>
+    
 </div>
+
+    
     
 <script>
+    
 document.addEventListener('DOMContentLoaded', () => {
 
     const rightColumn = document.querySelector('.right-column-wrapper');
@@ -336,7 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const staticFooter = document.getElementById('static-footer');
     
     // --- UTILITY FUNCTIONS ---
-
     function removeActiveClasses() {
         navLinks.forEach(link => link.classList.remove('active'));
     }
@@ -376,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- NAV LINK CLICK HANDLER ---
-
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -391,14 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- INITIAL LOAD ---
-    // CODE REMOVED: No initial file loading. The static HTML is the default.
-
-
-    // ----------------------------------------------------
-    // --- GALLERY POPUP LOGIC (Requires works.html to be loaded) ---
-    // ----------------------------------------------------
-    
+    // GALLERY POPUP LOGIC (Requires works.html to be loaded) 
     let currentGallery = [];
     let currentIndex = 0;
     let keyboardListenerAdded = false; 
@@ -531,7 +517,9 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Right-click is disabled on this page.");
     });
 });
+    
 </script>
 
 </body>
+    
 </html>
