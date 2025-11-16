@@ -216,29 +216,6 @@ h1, h2 {
 
 /* GALLERY PAGE */
 /* --- BEGIN: Image Gallery and Modal Styles (Safe Integration) --- */
-
-/* Base Styles (Keep these if you want the page background) */
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial;
-    /* Background Image/Styling as requested previously */
-    background: url('work-image.jpg') no-repeat fixed center; 
-    background-size: cover;
-    background-color: #f0f0f0; 
-}
-
-/* Updated Class: .page-header */
-.page-header {
-    text-align: center;
-    padding: 32px;
-    background-color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 8px;
-}
-
 /* Updated Class: .gallery-row */
 .gallery-row {
     display: flex;
