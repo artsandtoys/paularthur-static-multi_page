@@ -108,10 +108,9 @@ h1, h2 {
 
 /* spacing T, L, B, R */
 .content-section {
-    padding: 32.5px 0; /* */
+    padding: 32.5px 0;
 }
 
-/*
 /* Base styles for content loaded into the right column */
 .content-section p, 
 .right-column-wrapper p {
@@ -120,7 +119,7 @@ h1, h2 {
     margin-bottom: 16px;
     /* KEY FOR SPACING */
     /* white-space: pre-wrap; */
-}*/
+}
 
 /* spacing T, L, B, R */
 .timeline {
@@ -257,13 +256,6 @@ h1, h2 {
         padding-top: 0;
     }
     
-    /* Mobile fix: remove top padding on loaded content */
-    /*.right-column-wrapper > *:first-child {
-        padding-top: 0 !important; 
-    }
-    }*/
-
-/* @media (max-width: 600px) { */
     .gallery-btn {
         font-size: 2em;
         padding: 10px;
