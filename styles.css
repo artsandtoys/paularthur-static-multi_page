@@ -262,13 +262,13 @@ h1, h2 {
     justify-content: center; 
     align-items: center; 
     
-    z-index: 100;
+    z-index: 1000;
     background-color: rgba(0, 0, 0, 0.9);
 }
 
 .lightbox-content {
     display: block;
-    max-width: 75%; 
+    max-width: 50%; 
     /* Ensures the image respects the height of the viewport */
     max-height: 90vh; 
     object-fit: contain; /* Prevents the image from being cropped */
