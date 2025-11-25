@@ -297,7 +297,18 @@ h1, h2 {
         width: 100%;
         margin-top: 40px;
     }
-
+    
+    .grid-container {
+        /* Change to a single column */
+        grid-template-columns: 1fr; 
+        gap: 5px; 
+    }
+    
+    /* Optional: If you want to center the container when it's narrow */
+    .grid-container {
+        max-width: 95%; /* Give it 5% margin space on small screens */
+    }
+    
     /* --- HORIZONTAL NAV (Plain Text) --- */
     .left-content nav {
         display: flex;
