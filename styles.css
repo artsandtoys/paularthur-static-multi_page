@@ -219,6 +219,34 @@ h1, h2 {
     color: #b3ff00;
 }
 
+/* NEW CODE */
+.grid-container {
+    /* Existing properties to manage the 9x9 layout: */
+    display: flex;
+    flex-wrap: wrap;
+
+    /* Change 1: Set a specific width for the container. */
+    /* This allows the container itself to be positioned. */
+    width: 90vw;
+    max-width: 800px; /* Use the same size you had before */
+
+    /* Change 2: Remove 'margin: 0 auto;' which caused centering. */
+    /* The new 'margin' settings will push it to the right. */
+    margin: 0 0 0 auto;
+    /* '0 auto 0 0' would also work, but '0 0 0 auto' is clearer: */
+    /* top right bottom left */
+    /* 0    0    0    auto (pushes the container all the way to the right) */
+}
+
+/* No changes are typically needed for the individual images: */
+.grid-container img {
+    width: 11.11%;
+    height: auto;
+    cursor: pointer;
+    display: block;
+    object-fit: cover;
+}
+
 @media screen and (max-width: 768px) {
 
     /* 1. Stack the Main Container */
