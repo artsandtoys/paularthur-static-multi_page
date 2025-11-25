@@ -219,51 +219,59 @@ h1, h2 {
     color: #b3ff00;
 }
 
-/* NEW CODE */
+/* --- 1. Corrected Grid Container (using CSS Grid) --- */
 .grid-container {
-    /* Alignment: Aligns the entire container to the right */
-    margin: 0 0 0 auto; 
+    /* Layout: CSS Grid is the proper tool for a strict 9x9 layout */
+    display: grid;
+    /* This creates exactly 9 columns, each taking up an equal fraction (1fr) of the space */
+    grid-template-columns: repeat(9, 1fr); 
     
-    /* Layout: Enables the wrapping 9x9 layout */
-    display: flex;
-    flex-wrap: wrap; 
-    
-    /* Spacing: Creates a gutter between all grid items */
-    gap: 5px; /* Adjust this value (e.g., 5px or 1rem) for your desired spacing */
+    /* Spacing: Creates a consistent gap between grid items */
+    gap: 5px; 
 
-    /* Sizing: Define the overall size of the container */
+    /* Alignment & Sizing */
+    margin: 0 0 0 auto; /* Aligns the entire container to the right */
     width: 90vw;
-    max-width: 800px; /* 800px Or whatever maximum size you prefer */
+    max-width: 800px; 
 }
 
-/* No changes are typically needed for the individual images: */
+/* --- 2. Image Styling --- */
 .grid-container img {
-    /* Calculation: Ensure the image width accounts for the spacing (8 gaps of 5px) */
-    width: calc((100% - 40px) / 9); 
-    height: auto;
+    /* In CSS Grid, the image width is handled automatically by the '1fr' columns. 
+       We only need to ensure the image fills its grid cell and has square dimensions. */
+    width: 100%; 
+    height: 100%; /* Important: This ensures the image fills the 1fr height */
+    aspect-ratio: 1 / 1; /* Optional: Forces cells to be square for a classic grid look */
+    
     cursor: pointer;
     display: block;
-    object-fit: cover; 
+    object-fit: cover; /* Ensures the image covers the area of the cell */
 }
 
-/* --- Lightbox/Dimming Effect (Recap of centering logic) --- */
+/* --- 3. Lightbox Styling (Improvements) --- */
 .lightbox {
-    display: none; /* Changed to 'flex' when opened by JS */
-    position: absolute;
+    /* Use 'fixed' to cover the whole viewport, regardless of scrolling */
+    position: fixed; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    
+    /* Display: Use flex to center the content */
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    
     z-index: 100;
-    /* width: 100%;
-    height: 100%; */
     background-color: rgba(0, 0, 0, 0.9);
-    justify-content: center; /* Centers horizontally */
-    align-items: center;    /* Centers vertically */
 }
 
-/* We don't need the 'transform' hack on the image itself if we use the above: */
 .lightbox-content {
     display: block;
-    /* 50% */
     max-width: 90%; 
-    max-height: 00%;
+    /* Ensures the image respects the height of the viewport */
+    max-height: 90vh; 
+    object-fit: contain; /* Prevents the image from being cropped */
 }
 
 @media screen and (max-width: 768px) {
