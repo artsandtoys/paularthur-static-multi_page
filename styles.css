@@ -229,11 +229,11 @@ h1, h2 {
     flex-wrap: wrap; 
     
     /* Spacing: Creates a gutter between all grid items */
-    gap: 5px; /* Adjust this value (e.g., 5px or 1rem) for your desired spacing */
+    gap: 25px; /* Adjust this value (e.g., 5px or 1rem) for your desired spacing */
 
     /* Sizing: Define the overall size of the container */
     width: 90vw;
-    max-width: 800px; /* Or whatever maximum size you prefer */
+    max-width: 100%; /* 800px Or whatever maximum size you prefer */
 }
 
 /* No changes are typically needed for the individual images: */
@@ -250,9 +250,6 @@ h1, h2 {
 .lightbox {
     display: none; /* Changed to 'flex' when opened by JS */
     position: fixed;
-    /* ... other properties ... */
-
-    /* These properties ensure the image is centered when display is 'flex' */
     justify-content: center; /* Centers horizontally */
     align-items: center;    /* Centers vertically */
 }
@@ -260,8 +257,8 @@ h1, h2 {
 /* We don't need the 'transform' hack on the image itself if we use the above: */
 .lightbox-content {
     display: block;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 50%;
+    max-height: 50%;
 }
 
 @media screen and (max-width: 768px) {
