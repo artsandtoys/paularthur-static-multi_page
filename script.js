@@ -1,29 +1,58 @@
-// script for js
+/**
+ * =================================================================
+ * SCRIPT.JS - Paul Arthur Portfolio Site Logic
+ * =================================================================
+ * This script handles dynamic content loading for the left-column navigation
+ * and manages the media gallery pop-up logic for the 'works' section.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // -----------------------------------------------------------------
+    // 1. GLOBAL ELEMENT SELECTORS
+    // -----------------------------------------------------------------
 
     const rightColumn = document.querySelector('.right-column-wrapper');
     const navLinks = document.querySelectorAll('.left-content nav a.nav-link');
-    // Get the static content and footer elements 
-    const defaultSplash = document.getElementById('splash-content'); 
-    const staticFooter = document.getElementById('static-footer');
     
-    // --- UTILITY FUNCTIONS ---
+    // Selectors for elements that might be hidden when dynamic content loads
+    const defaultSplash = document.getElementById('splash-content'); // (Not used in the provided HTML, but kept for context)
+    const staticFooter = document.getElementById('static-footer');    // (Not used in the provided HTML, but kept for context)
+    
+    // GALLERY STATE VARIABLES
+    let currentGallery = [];
+    let currentIndex = 0;
+    let keyboardListenerAdded = false;
+
+    // -----------------------------------------------------------------
+    // 2. CORE UTILITY FUNCTIONS
+    // -----------------------------------------------------------------
+
+    /**
+     * Removes the 'active' class from all navigation links.
+     */
     function removeActiveClasses() {
         navLinks.forEach(link => link.classList.remove('active'));
     }
 
-    // Function to hide the static content when a link is clicked
+    /**
+     * Hides default content elements (splash/footer) and clears the right column.
+     * This prepares the column for new content loaded via fetch.
+     */
     function hideDefaultContent() {
         if (defaultSplash) defaultSplash.style.display = 'none';
-        if (staticFooter) staticFooter.style.display = 'none'; 
-        // Clear any content that might have been loaded dynamically previously
-        // We use innerHTML = '' on the rightColumn before insertion, but this ensures safety
+        if (staticFooter) staticFooter.style.display = 'none';
+        
+        // Clear previous content
         rightColumn.innerHTML = ''; 
     }
 
-    // Function to load content dynamically via fetch
+    /**
+     * Fetches an HTML file, injects it into the right column, and re-attaches events.
+     * @param {string} fileName - The name of the HTML file to load.
+     */
     async function loadContent(fileName) {
-        // 1. Hide the static splash content before loading new content
+        // 1. Prepare the column
         hideDefaultContent(); 
         
         try {
@@ -33,11 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const htmlContent = await response.text();
 
-            // 2. Insert new HTML
+            // 2. Insert new HTML and scroll to top
             rightColumn.innerHTML = htmlContent;
             window.scrollTo(0, 0); 
 
-            // 3. Re-attach event listeners (especially for the gallery)
+            // 3. Re-attach gallery event listeners (CRITICAL for dynamically loaded content)
             attachGalleryTriggers(); 
 
         } catch (error) {
@@ -46,26 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NAV LINK CLICK HANDLER ---
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
+    // -----------------------------------------------------------------
+    // 3. GALLERY / POP-UP LOGIC
+    // -----------------------------------------------------------------
 
-            const contentFile = this.getAttribute('data-content-file');
-            if (contentFile) {
-                loadContent(contentFile);
-                
-                removeActiveClasses();
-                this.classList.add('active');
-            }
-        });
-    });
-
-    // GALLERY POPUP LOGIC (Requires works.html to be loaded) 
-    let currentGallery = [];
-    let currentIndex = 0;
-    let keyboardListenerAdded = false; 
-
+    /**
+     * Stops any currently playing video and removes all media (img/video) 
+     * from the pop-up container to prepare for the next item.
+     * @param {HTMLElement} popup - The gallery pop-up container element.
+     */
     function clearMedia(popup) {
         popup.querySelectorAll('img, video').forEach(el => {
             if (el.tagName && el.tagName.toLowerCase() === 'video') {
@@ -76,12 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Loads and displays the image or video at the current index in the pop-up.
+     * @param {HTMLElement} popup - The gallery pop-up container.
+     * @param {HTMLElement} prevBtn - The previous button element (used for positioning).
+     * @param {HTMLElement} nextBtn - The next button element (used for positioning).
+     * @param {number} index - The index of the media in the currentGallery array.
+     */
     function showMedia(popup, prevBtn, nextBtn, index) {
         clearMedia(popup);
         const src = currentGallery[index];
         if (!src) return;
 
         const isVideo = src.match(/\.(mp4|webm)(\?.*)?$/i);
+        // Media is inserted before the next button to keep buttons visible on top
         const insertionPoint = nextBtn; 
 
         if (isVideo) {
@@ -94,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             video.playsInline = true;
             video.style.maxWidth = '100%';
             video.maxHeight = '100%';
-            video.setAttribute('aria-label', 'Gallery video');
+            // Insert video element into the popup
             popup.insertBefore(video, insertionPoint);
 
             video.addEventListener('error', (ev) => console.warn('Video error', ev));
@@ -107,52 +133,64 @@ document.addEventListener('DOMContentLoaded', () => {
             img.alt = 'Gallery image';
             img.style.maxWidth = '100%';
             img.maxHeight = '100%';
+            // Insert image element into the popup
             popup.insertBefore(img, insertionPoint);
         }
+        
+        // Update current index after successful display
+        currentIndex = index;
     }
     
-    // Attaches all gallery-related events after new content is loaded
+    /**
+     * Defines and attaches all event listeners for the gallery pop-up.
+     * This function MUST be run for both initial content AND after loading new content.
+     */
     function attachGalleryTriggers() {
-        // The popup element is loaded inside works.html, so we query the main column wrapper
-        // The popup itself must be an ID, so we look for it in the newly loaded content
-        const popup = rightColumn.querySelector('#columnPopup');
+        // Find the pop-up elements inside the currently loaded content
+        // The ID columnPopup is in your main HTML for the 'works' section
+        const popup = document.querySelector('#columnPopup'); 
         if (!popup) return;
 
         const prevBtn = popup.querySelector('#prevBtn');
         const nextBtn = popup.querySelector('#nextBtn');
         
-        // Define trigger handler
+        // Define the click handler for the timeline links
         const galleryTriggerHandler = function(e) {
-             e.preventDefault();
-             // The gallery must be attached to the main body's event listener for key presses to work
-             currentGallery = e.currentTarget.dataset.images.split(',').map(x => x.trim()).filter(x => x.length);
-             currentIndex = 0;
-             showMedia(popup, prevBtn, nextBtn, currentIndex);
-             popup.style.display = 'flex';
+            e.preventDefault();
+            
+            // 1. Parse the list of images/videos from the data attribute
+            currentGallery = e.currentTarget.dataset.images.split(',').map(x => x.trim()).filter(x => x.length);
+            currentIndex = 0; // Always start at the first item
+            
+            // 2. Show the first piece of media and display the pop-up
+            showMedia(popup, prevBtn, nextBtn, currentIndex);
+            popup.style.display = 'flex';
         };
 
-        // Targets gallery triggers in the currently loaded content
-        rightColumn.querySelectorAll('.gallery-trigger').forEach(item => {
-            item.removeEventListener('click', galleryTriggerHandler);
+        // Attach click listeners to all timeline items with the 'gallery-trigger' class
+        document.querySelectorAll('.gallery-trigger').forEach(item => {
+            // Remove previous listeners (needed when content is reloaded)
+            item.removeEventListener('click', galleryTriggerHandler); 
             item.addEventListener('click', galleryTriggerHandler);
         });
         
         // ATTACH NAV BUTTON EVENTS
         nextBtn.onclick = (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevent background click from closing
             if (!currentGallery.length) return;
-            currentIndex = (currentIndex + 1) % currentGallery.length;
+            currentIndex = (currentIndex + 1) % currentGallery.length; // Loop to start
             showMedia(popup, prevBtn, nextBtn, currentIndex);
         };
 
         prevBtn.onclick = (e) => {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevent background click from closing
             if (!currentGallery.length) return;
-            currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+            // Loop to end if moving back from the start
+            currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; 
             showMedia(popup, prevBtn, nextBtn, currentIndex);
         };
 
-        // ATTACH CLOSE EVENT (Only on background click)
+        // ATTACH CLOSE EVENT (Close when clicking the semi-transparent background)
         popup.onclick = (e) => {
             if (e.target === popup) {
                 popup.style.display = 'none';
@@ -169,9 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // KeyDown Handler Definition
+    /**
+     * Handles keyboard shortcuts for the pop-up (Escape to close, Arrows to navigate).
+     */
     function keyboardHandler(e) {
-        // Since the popup element is dynamically loaded, we must query the main document for its existence
         const popup = document.querySelector('#columnPopup'); 
         
         if (popup && popup.style.display === 'flex') {
@@ -179,14 +218,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const nextBtn = popup.querySelector('#nextBtn');
             
             if (e.key === 'Escape') {
-                popup.querySelectorAll('video').forEach(v => { try { v.pause(); } catch (err) {} });
-                popup.style.display = 'none';
-                clearMedia(popup);
+                // Manually trigger the background close action
+                popup.click(); 
             }
             if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
             if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
         }
     }
+
+    // -----------------------------------------------------------------
+    // 4. EVENT ATTACHMENT / INITIALIZATION
+    // -----------------------------------------------------------------
+
+    // --- NAV LINK CLICK HANDLER ---
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const contentFile = this.getAttribute('data-content-file');
+            if (contentFile) {
+                loadContent(contentFile);
+                
+                removeActiveClasses();
+                this.classList.add('active');
+            }
+        });
+    });
+    
+    // 🚀 THE FIX: INITIALIZE GALLERY FOR DEFAULT CONTENT
+    // This is the critical addition to make the 'works' section (present on load) functional.
+    attachGalleryTriggers();
     
     // --- Disable right-click on the entire page --- 
     document.addEventListener('contextmenu', function(e) {
@@ -195,38 +256,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-    // --- NEW 9x9 GRID LIGHTBOX FUNCTIONS (Place at the end of your JS file) ---
 
+// =================================================================
+// SECONDARY LIGHTBOX FUNCTIONS (FOR GRID CONTENT, IF USED)
+// =================================================================
+// These functions appear to be for a separate image grid (e.g., in snaps.html)
+// and rely on a different lightbox structure than the timeline pop-up (#columnPopup).
+
+/**
+ * Opens a simple image lightbox used for grid elements.
+ * @param {HTMLElement} element - The grid image element that was clicked.
+ */
 function openLightbox(element) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
 
-    // 1. Get the full-size image source from the data-full-src attribute
     const fullSrc = element.getAttribute('data-full-src');
     if (!fullSrc) {
         console.error('Image element missing data-full-src attribute.');
         return;
     }
 
-    // 2. Set the full-size image source and display
     lightboxImage.src = fullSrc;
-    lightbox.style.display = 'flex'; // Use 'flex' to activate CSS centering
+    lightbox.style.display = 'flex'; 
 
-    // 3. Optional: Prevent body scrolling while lightbox is open
     document.body.style.overflow = 'hidden'; 
 }
 
+/**
+ * Closes the simple image lightbox.
+ */
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     
-    // 1. Hide the lightbox
     lightbox.style.display = 'none';
     
-    // 2. Restore body scrolling
     document.body.style.overflow = '';
     
-    // 3. Clear the image source (good practice)
     document.getElementById('lightbox-image').src = '';
 }
-    // end
-
