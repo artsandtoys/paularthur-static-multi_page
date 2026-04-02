@@ -1,11 +1,3 @@
-/**
- * =================================================================
- * SCRIPT.JS - Paul Arthur Portfolio Site Logic
- * =================================================================
- * This script handles dynamic content loading for the left-column navigation
- * and manages the media gallery pop-up logic for the 'works' section.
- */
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // -----------------------------------------------------------------
