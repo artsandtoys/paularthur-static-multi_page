@@ -147,10 +147,12 @@ h1, h2 {
     transition: color 0.3s ease;
 }
 
+/*
 .timeline-item-link:hover {
     color: #b3ff00;
     cursor: pointer;
-}
+} 
+*/
 
 .timeline-item-link::before {
     content: '';
