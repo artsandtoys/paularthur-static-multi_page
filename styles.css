@@ -164,6 +164,13 @@ h1, h2 {
     background: #b3ff00;
     border-radius: 50%;
     z-index: 1;
+    /* This makes the "grow" look smooth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-item-link:hover::before {
+    transform: scale(1.4);
+    box-shadow: 0 0 10px #b3ff00;
 }
 
 .timeline-date {
