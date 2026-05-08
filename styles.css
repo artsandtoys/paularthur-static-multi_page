@@ -231,8 +231,7 @@ h1, h2 {
 
 /* --- 1. Corrected Grid Container (using CSS Grid) --- */
 .grid-container {
-    display: flex; /* grid; */
-        flex-wrap: wrap;
+    display: grid; /* grid; */
     grid-template-columns: repeat(3, 1fr); 
     gap: 5px; 
 
