@@ -231,12 +231,9 @@ h1, h2 {
 
 /* --- 1. Corrected Grid Container (using CSS Grid) --- */
 .grid-container {
-    /* Layout: CSS Grid is the proper tool for a strict 9x9 layout */
-    display: grid;
-    /* This creates exactly 9 columns, each taking up an equal fraction (1fr) of the space */
+    display: flex; /* grid; */
+        flex-wrap: wrap;
     grid-template-columns: repeat(3, 1fr); 
-    
-    /* Spacing: Creates a consistent gap between grid items */
     gap: 5px; 
 
     /* Alignment & Sizing */
