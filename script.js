@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    /**
+    /* 
      * Handles keyboard shortcuts for the pop-up (Escape to close, Arrows to navigate).
      */
     function keyboardHandler(e) {
@@ -238,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // 🚀 THE FIX: INITIALIZE GALLERY FOR DEFAULT CONTENT
-    // This is the critical addition to make the 'works' section (present on load) functional.
     attachGalleryTriggers();
     
     // --- Disable right-click on the entire page --- 
