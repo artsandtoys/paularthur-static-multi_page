@@ -5,7 +5,7 @@ async function loadBlogPosts() {
   const container = document.getElementById('blog-posts-container');
   
   try {
-    const response = await fetch('posts.json');
+    const response = await fetch('blog.json');
     allPosts = await response.json();
 
     container.innerHTML = '';
