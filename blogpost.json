@@ -1,1 +1,15 @@
 
+[
+  {
+    "title": "New Single Release & Game Score",
+    "date": "July 2026",
+    "summary": "A quick look into my recent work combining electronic music production with spatial game audio.",
+    "content": "<p>Just dropped a new track on editorial playlists!</p><p>I've also been wrapping up audio design work for an upcoming game title, focusing on ambient soundscapes and melodic textures.</p>"
+  },
+  {
+    "title": "Spatial Sound & VR Prototyping",
+    "date": "May 2026",
+    "summary": "Notes on mixing sound in 3D space for Meta Start projects.",
+    "content": "<p>Designing music for VR forces you to rethink standard stereo fields. Ambient tails and washed reverb function differently when the user can move inside the space.</p>"
+  }
+]
