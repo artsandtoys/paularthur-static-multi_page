@@ -20,12 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // SECTION 2: BLOG SYSTEM LOGIC
-    // Reads posts/manifest.json and loads individual JSON files dynamically.
+    // Reads posts/manifest.json, loads individual post JSON files, and 
+    // handles full post views on "read more..." click.
     // =================================================================
 
     /**
      * Fetches post filenames from manifest.json and loads each post JSON file.
-     * Generates HTML dynamically and injects it into #blog-posts-container.
+     * Renders summaries and adds "read more..." buttons for full view.
      */
     async function populateBlogPosts() {
         const container = document.getElementById('blog-posts-container');
@@ -45,26 +46,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // STEP B: Fetch all individual post files in parallel
             const postPromises = postFiles.map(file => 
-                fetch(`posts/${file}`).then(res => {
-                    if (!res.ok) throw new Error(`Failed to load posts/${file}`);
-                    return res.json();
-                })
+                fetch(`posts/${file}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`Failed to load posts/${file}`);
+                        return res.json();
+                    })
+                    .then(data => ({ filename: file, ...data }))
             );
 
             const posts = await Promise.all(postPromises);
             container.innerHTML = ''; // Clear "Loading..." text
 
-            // STEP C: Render each post into the DOM (in manifest order)
+            // STEP C: Render each post snippet into the DOM
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.style.marginBottom = '30px';
 
+                const hasMore = Boolean(post.content && post.content.trim().length > 0);
+
                 postElement.innerHTML = `
                     <h3 style="margin-bottom: 5px;"><b style="color: Aqua;">${post.title}</b></h3>
                     <p><small style="color: #aaa;">${post.date}</small></p>
-                    <p style="color: #ddd;">${post.content}</p>
+                    <p style="color: #ddd;">
+                        ${post.summary || post.content}
+                        ${hasMore ? `
+                            <br><br>
+                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
+                        ` : ''}
+                    </p>
                     <br>
                 `;
+
+                // STEP D: Attach event listener to open full post page view
+                if (hasMore) {
+                    const btn = postElement.querySelector('.read-more-btn');
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openPostView(post.filename);
+                    });
+                }
 
                 container.appendChild(postElement);
             });
@@ -72,6 +92,50 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error fetching blog posts:', error);
             container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
+        }
+    }
+
+    /**
+     * Fetches and displays a full post on a dedicated view page.
+     * @param {string} filename - The json filename inside /posts/
+     */
+    async function openPostView(filename) {
+        if (!rightColumn) return;
+
+        // Update URL hash for direct linking/sharing
+        window.location.hash = `post?id=${filename}`;
+
+        try {
+            const res = await fetch(`posts/${filename}`);
+            if (!res.ok) throw new Error(`Failed to fetch post: ${filename}`);
+            const post = await res.json();
+
+            window.scrollTo(0, 0);
+
+            rightColumn.innerHTML = `
+                <section class="content-section">
+                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
+                    <br><br>
+                    <h2><b style="color: Aqua;">${post.title}</b></h2>
+                    <p><small style="color: #aaa;">${post.date}</small></p>
+                    <br>
+                    <div style="color: #ddd; line-height: 1.6;">
+                        ${post.summary ? `<p>${post.summary}</p>` : ''}
+                        <p>${post.content}</p>
+                    </div>
+                </section>
+            `;
+
+            // "Back to blog" button event
+            document.getElementById('back-to-blog').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.hash = ''; // Clear hash
+                loadContent('blog.html');
+            });
+
+        } catch (error) {
+            console.error('Error opening full post:', error);
+            rightColumn.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load full post content (${error.message})</small></p>`;
         }
     }
 
@@ -255,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // SECTION 5: INITIALIZATION & NAVIGATION LISTENERS
-    // Binds click handlers to left menu links and disables right clicks.
+    // Binds click handlers to left menu links, direct hashes, and right clicks.
     // =================================================================
 
     navLinks.forEach(link => {
@@ -264,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const contentFile = this.getAttribute('data-content-file');
             if (contentFile) {
+                window.location.hash = ''; // Reset hash when navigating away
                 loadContent(contentFile);
                 removeActiveClasses();
                 this.classList.add('active');
@@ -274,6 +339,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize gallery triggers for statically loaded content
     attachGalleryTriggers();
     
+    // Handle direct URL hash loads (e.g., refreshing or directly visiting a post link)
+    if (window.location.hash.startsWith('#post?id=')) {
+        const filename = window.location.hash.replace('#post?id=', '');
+        if (filename) {
+            hideDefaultContent();
+            openPostView(filename);
+        }
+    }
+
     // Disable right-click context menu site-wide
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
