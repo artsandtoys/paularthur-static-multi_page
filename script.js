@@ -31,18 +31,35 @@ document.addEventListener('DOMContentLoaded', () => {
         rightColumn.innerHTML = ''; 
     }
 
-    // Helper function to fetch & populate posts when blog.html loads
+    // Helper function to fetch & populate individual JSON posts from posts/
     async function populateBlogPosts() {
         const container = document.getElementById('blog-posts-container');
         if (!container) return;
 
         try {
-            const response = await fetch('posts.json');
-            if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+            // 1. Fetch the manifest list of post filenames
+            const manifestResponse = await fetch('posts/manifest.json');
+            if (!manifestResponse.ok) throw new Error(`HTTP Error ${manifestResponse.status}`);
             
-            const posts = await response.json();
-            container.innerHTML = ''; // Clear "Loading more..." text
+            const postFiles = await manifestResponse.json();
+            
+            if (!Array.isArray(postFiles) || postFiles.length === 0) {
+                container.innerHTML = '<p><small style="color: #aaa;">No posts found.</small></p>';
+                return;
+            }
 
+            // 2. Fetch all individual post files concurrently
+            const postPromises = postFiles.map(file => 
+                fetch(`posts/${file}`).then(res => {
+                    if (!res.ok) throw new Error(`Failed to load posts/${file}`);
+                    return res.json();
+                })
+            );
+
+            const posts = await Promise.all(postPromises);
+            container.innerHTML = ''; // Clear loading text
+
+            // 3. Render each post into the DOM (in manifest order)
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.style.marginBottom = '30px';
@@ -56,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 container.appendChild(postElement);
             });
+
         } catch (error) {
             console.error('Error fetching blog posts:', error);
             container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
@@ -75,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             rightColumn.innerHTML = htmlContent;
             window.scrollTo(0, 0); 
 
-            // If we just loaded blog.html, fetch & render posts.json
+            // If we just loaded blog.html, fetch & render individual posts from posts/
             if (fileName === 'blog.html' || document.getElementById('blog-posts-container')) {
                 await populateBlogPosts();
             }
