@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <section class="content-section">
                 <br>
                     <br>
+                        <br>
                     <p class="post-date">${post.date}</p>
                     <h3 class="post-title"><b>${post.title}</b></h3>
                     <div class="post-body">
