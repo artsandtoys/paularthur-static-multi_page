@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // SECTION 2: BLOG SYSTEM LOGIC
-    // Reads posts/manifest.json, loads individual post JSON files, and 
+    // Reads ./posts/manifest.json, loads individual post JSON files, and 
     // handles full post views on "read more..." click.
     // =================================================================
 
@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return; // Exit if the blog container doesn't exist on screen
 
         try {
-            // STEP A: Fetch the manifest (the list of post filenames)
-            const manifestResponse = await fetch('posts/manifest.json');
+            // STEP A: Fetch the manifest from ./posts/manifest.json
+            const manifestResponse = await fetch('./posts/manifest.json');
             if (!manifestResponse.ok) throw new Error(`HTTP Error ${manifestResponse.status}`);
             
             const postFiles = await manifestResponse.json();
@@ -44,9 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // STEP B: Fetch all individual post files in parallel
+            // STEP B: Fetch all individual post files concurrently
             const postPromises = postFiles.map(file => 
-                fetch(`posts/${file}`)
+                fetch(`./posts/${file}`)
                     .then(res => {
                         if (!res.ok) throw new Error(`Failed to load posts/${file}`);
                         return res.json();
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
                 postElement.innerHTML = `
-                    <h3 style="margin-bottom: 5px;"><b style="color: white;">${post.title}</b></h3>
+                    <h3 style="margin-bottom: 5px; color: Aqua !important;"><b style="color: Aqua !important;">${post.title}</b></h3>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <p style="color: #ddd;">
                         ${post.summary || post.content}
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error fetching blog posts:', error);
-            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts...</small></p>`;
+            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
         }
     }
 
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.hash = `post?id=${filename}`;
 
         try {
-            const res = await fetch(`posts/${filename}`);
+            const res = await fetch(`./posts/${filename}`);
             if (!res.ok) throw new Error(`Failed to fetch post: ${filename}`);
             const post = await res.json();
 
@@ -114,9 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <a href="blog.html" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
+                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
                     <br><br>
-                    <h2><b style="color: Aqua;">${post.title}</b></h2>
+                    <h2 style="color: Aqua !important;"><b style="color: Aqua !important;">${post.title}</b></h2>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <br>
                     <div style="color: #ddd; line-height: 1.6;">
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hideDefaultContent(); 
         
         try {
-            const response = await fetch(fileName);
+            const response = await fetch(`./${fileName}`);
             if (!response.ok) {
                 throw new Error(`Failed to load content file: ${fileName}`);
             }
