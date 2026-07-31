@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
                 postElement.innerHTML = `
-                    <h3 style="margin-bottom: 5px; color: Aqua !important;"><b style="color: Aqua !important;">${post.title}</b></h3>
+                    <h3 style="margin-bottom: 5px; color: Aqua !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <p style="color: #ddd;">
                         ${post.summary || post.content}
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             rightColumn.innerHTML = `
                 <section class="content-section">
                     <br><br>
-                    <h2 style="color: Aqua !important;"><b style="color: white !important;">${post.title}</b></h2>
+                    <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <br>
                     <div style="color: #ddd; line-height: 1.6;">
