@@ -64,15 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
-                // BLOG POST
+                // BLOG POST SHORT
                 postElement.innerHTML = `
-                    <p><small style="color: #aaa;">${post.date}</small></p>
+                    <p><style="color: #aaa;">${post.date}</style></p>
                     <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <p style="color: #ddd;">
                         ${post.summary || post.content}
                         ${hasMore ? `
                             <br><br>
-                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
+                    <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
                         ` : ''}
                     </p>
                     <br>
@@ -113,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.scrollTo(0, 0);
 
-            // BLOG POST
+            // BLOG POST FULL
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <p><small style="color: #aaa;">${post.date}</small></p>
+                    <p><style="color: #aaa;">${post.date}</style></p>
                     <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <div style="color: #ddd; line-height: 1.5;">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
