@@ -289,6 +289,56 @@ h1, h2 {
     object-fit: contain;
 }
 
+/* =================================================================
+   BLOG SYSTEM STYLES
+   ================================================================= */
+
+/* General Text & Metadata */
+.post-date {
+    color: #aaa;
+}
+
+.post-title {
+    margin-bottom: 5px;
+    color: #ffffff !important;
+}
+
+.post-title b {
+    color: #ffffff !important;
+}
+
+.post-body {
+    color: #ddd;
+    line-height: 1.5;
+}
+
+.post-item {
+    margin-bottom: 30px;
+}
+
+/* Links & Action Buttons */
+.read-more-btn,
+#back-to-blog {
+    color: #b3ff00;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Status & Message States */
+.blog-status-msg {
+    color: #aaa;
+}
+
+.blog-error-msg {
+    color: #ff6b6b;
+}
+
+/* Overlay & Media Sizing */
+.popup-media {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 /* MOBILE RESPONSIVE STYLES */
 @media screen and (max-width: 768px) {
     .main-container {
