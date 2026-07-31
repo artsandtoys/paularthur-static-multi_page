@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo(0, 0); 
 
             // IF BLOG HTML WAS LOADED: Trigger the blog fetch engine
-            if (fileName === 'blog.html' || document.getElementById('blog-posts-container')) {
+            if (fileName === 'words.html' || document.getElementById('blog-posts-container')) {
                 await populateBlogPosts();
             }
 
