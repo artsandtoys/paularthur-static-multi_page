@@ -64,9 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
+                // BLOG POST
                 postElement.innerHTML = `
-                    <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <p><small style="color: #aaa;">${post.date}</small></p>
+                    <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <p style="color: #ddd;">
                         ${post.summary || post.content}
                         ${hasMore ? `
@@ -112,13 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.scrollTo(0, 0);
 
+            // BLOG POST
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <br>
-                    <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <p><small style="color: #aaa;">${post.date}</small></p>
-                    <br>
-                    <div style="color: #ddd; line-height: 1.6;">
+                    <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
+                    <div style="color: #ddd; line-height: 1.5;">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
                     </div>
