@@ -293,6 +293,7 @@ h1, h2 {
 
 .post-date {
     color: #aaa;
+    margin-top: 0;
 }
 
 .post-title {
