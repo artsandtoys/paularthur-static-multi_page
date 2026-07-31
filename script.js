@@ -129,8 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = `
                 <section class="content-section">
+                <br>
+                    <br>
                     <p class="post-date">${post.date}</p>
-                    <h2 class="post-title"><b>${post.title}</b></h2>
+                    <h3 class="post-title"><b>${post.title}</b></h3>
                     <div class="post-body">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
