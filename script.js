@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // -----------------------------------------------------------------
-    // 1. GLOBAL ELEMENT SELECTORS
-    // -----------------------------------------------------------------
+    // =================================================================
+    // SECTION 1: GLOBAL ELEMENT SELECTORS
+    // Finds and stores the main layout components from your HTML page.
+    // =================================================================
 
     const rightColumn = document.querySelector('.right-column-wrapper');
     const navLinks = document.querySelectorAll('.left-content nav a.nav-link');
@@ -11,33 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultSplash = document.getElementById('splash-content'); 
     const staticFooter = document.getElementById('static-footer');   
     
-    // GALLERY STATE VARIABLES
+    // Gallery state variables (tracks images, videos, and navigation index)
     let currentGallery = [];
     let currentIndex = 0;
     let keyboardListenerAdded = false;
 
-    // -----------------------------------------------------------------
-    // 2. CORE UTILITY FUNCTIONS
-    // -----------------------------------------------------------------
 
-    function removeActiveClasses() {
-        navLinks.forEach(link => link.classList.remove('active'));
-    }
+    // =================================================================
+    // SECTION 2: BLOG SYSTEM LOGIC
+    // Reads posts/manifest.json and loads individual JSON files dynamically.
+    // =================================================================
 
-    function hideDefaultContent() {
-        if (defaultSplash) defaultSplash.style.display = 'none';
-        if (staticFooter) staticFooter.style.display = 'none';
-        
-        rightColumn.innerHTML = ''; 
-    }
-
-    // Helper function to fetch & populate individual JSON posts from posts/
+    /**
+     * Fetches post filenames from manifest.json and loads each post JSON file.
+     * Generates HTML dynamically and injects it into #blog-posts-container.
+     */
     async function populateBlogPosts() {
         const container = document.getElementById('blog-posts-container');
-        if (!container) return;
+        if (!container) return; // Exit if the blog container doesn't exist on screen
 
         try {
-            // 1. Fetch the manifest list of post filenames
+            // STEP A: Fetch the manifest (the list of post filenames)
             const manifestResponse = await fetch('posts/manifest.json');
             if (!manifestResponse.ok) throw new Error(`HTTP Error ${manifestResponse.status}`);
             
@@ -48,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // 2. Fetch all individual post files concurrently
+            // STEP B: Fetch all individual post files in parallel
             const postPromises = postFiles.map(file => 
                 fetch(`posts/${file}`).then(res => {
                     if (!res.ok) throw new Error(`Failed to load posts/${file}`);
@@ -57,9 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
             const posts = await Promise.all(postPromises);
-            container.innerHTML = ''; // Clear loading text
+            container.innerHTML = ''; // Clear "Loading..." text
 
-            // 3. Render each post into the DOM (in manifest order)
+            // STEP C: Render each post into the DOM (in manifest order)
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.style.marginBottom = '30px';
@@ -80,6 +75,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
+    // =================================================================
+    // SECTION 3: PAGE ROUTING / CONTENT LOADING (SPA SYSTEM)
+    // Fetches sub-pages (blog.html, music.html, etc.) via AJAX without refreshing.
+    // =================================================================
+
+    // Removes the active green color from navigation links
+    function removeActiveClasses() {
+        navLinks.forEach(link => link.classList.remove('active'));
+    }
+
+    // Clears out the right column before loading new section content
+    function hideDefaultContent() {
+        if (defaultSplash) defaultSplash.style.display = 'none';
+        if (staticFooter) staticFooter.style.display = 'none';
+        
+        rightColumn.innerHTML = ''; 
+    }
+
+    /**
+     * Loads dynamic HTML files (like intro.html, blog.html, music.html) into .right-column-wrapper
+     * @param {string} fileName - The HTML snippet file to load.
+     */
     async function loadContent(fileName) {
         hideDefaultContent(); 
         
@@ -90,15 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const htmlContent = await response.text();
 
+            // Inject the new HTML content and scroll to top
             rightColumn.innerHTML = htmlContent;
             window.scrollTo(0, 0); 
 
-            // If we just loaded blog.html, fetch & render individual posts from posts/
+            // IF BLOG HTML WAS LOADED: Trigger the blog fetch engine
             if (fileName === 'blog.html' || document.getElementById('blog-posts-container')) {
                 await populateBlogPosts();
             }
 
-            // Re-attach gallery triggers for dynamically loaded content
+            // Re-attach pop-up gallery event listeners to any newly loaded items
             attachGalleryTriggers(); 
 
         } catch (error) {
@@ -107,10 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // -----------------------------------------------------------------
-    // 3. GALLERY / POP-UP LOGIC (#columnPopup)
-    // -----------------------------------------------------------------
 
+    // =================================================================
+    // SECTION 4: MAIN POP-UP GALLERY LOGIC (#columnPopup)
+    // Handles overlay image/video preview popups and keyboard navigation.
+    // =================================================================
+
+    // Clears current image or video elements from the overlay
     function clearMedia(popup) {
         popup.querySelectorAll('img, video').forEach(el => {
             if (el.tagName && el.tagName.toLowerCase() === 'video') {
@@ -121,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Injects image or video into overlay based on current index
     function showMedia(popup, prevBtn, nextBtn, index) {
         clearMedia(popup);
         const src = currentGallery[index];
@@ -157,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentIndex = index;
     }
     
+    // Binds click handlers to all .gallery-trigger elements in loaded pages
     function attachGalleryTriggers() {
         const popup = document.querySelector('#columnPopup'); 
         if (!popup) return;
@@ -179,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item.addEventListener('click', galleryTriggerHandler);
         });
         
+        // Next button handler
         nextBtn.onclick = (e) => {
             e.stopPropagation(); 
             if (!currentGallery.length) return;
@@ -186,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showMedia(popup, prevBtn, nextBtn, currentIndex);
         };
 
+        // Previous button handler
         prevBtn.onclick = (e) => {
             e.stopPropagation(); 
             if (!currentGallery.length) return;
@@ -193,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showMedia(popup, prevBtn, nextBtn, currentIndex);
         };
 
+        // Close popup when clicking backdrop
         popup.onclick = (e) => {
             if (e.target === popup) {
                 popup.style.display = 'none';
@@ -202,12 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        // Bind Arrow keys and Escape key listener
         if (!keyboardListenerAdded) {
             document.addEventListener('keydown', keyboardHandler);
             keyboardListenerAdded = true;
         }
     }
     
+    // Handles Escape key and Left/Right Arrow key navigation for galleries
     function keyboardHandler(e) {
         const popup = document.querySelector('#columnPopup'); 
         
@@ -223,9 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // -----------------------------------------------------------------
-    // 4. EVENT ATTACHMENT / INITIALIZATION
-    // -----------------------------------------------------------------
+
+    // =================================================================
+    // SECTION 5: INITIALIZATION & NAVIGATION LISTENERS
+    // Binds click handlers to left menu links and disables right clicks.
+    // =================================================================
 
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -240,18 +271,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    // Initialize gallery triggers for statically loaded content
     attachGalleryTriggers();
     
+    // Disable right-click context menu site-wide
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         alert("Right-click is disabled on this page.");
     });
 });
 
+
 // =================================================================
-// SECONDARY LIGHTBOX FUNCTIONS (FOR SNAPS GRID CONTENT)
+// SECTION 6: SECONDARY LIGHTBOX (SNAPS / PHOTO GRID CONTENT)
+// Simple full-screen image lightbox for photo grids outside #columnPopup.
 // =================================================================
 
+/**
+ * Opens full-screen lightbox for single photo elements.
+ * @param {HTMLElement} element - The grid item or media element clicked.
+ */
 function openLightbox(element) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
@@ -269,6 +308,9 @@ function openLightbox(element) {
     document.body.style.overflow = 'hidden'; 
 }
 
+/**
+ * Closes simple full-screen lightbox.
+ */
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     lightbox.style.display = 'none';
