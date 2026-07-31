@@ -114,15 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
                     <br><br>
-                    <h2 style="color: Aqua !important;"><b style="color: Aqua !important;">${post.title}</b></h2>
+                    <h2 style="color: Aqua !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <br>
                     <div style="color: #ddd; line-height: 1.6;">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
                     </div>
+                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
                 </section>
             `;
 
