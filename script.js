@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
                 postElement.innerHTML = `
-                    <h3 style="margin-bottom: 5px; color: Aqua !important;"><b style="color: white !important;">${post.title}</b></h3>
+                    <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <p style="color: #ddd;">
                         ${post.summary || post.content}
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <br><br>
+                    <br>
                     <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <p><small style="color: #aaa;">${post.date}</small></p>
                     <br>
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('back-to-blog').addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.hash = ''; // Clear hash
-                loadContent('works.html');
+                loadContent('words.html');
             });
 
         } catch (error) {
