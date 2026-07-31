@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
                     </div>
-                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">&#10094; back to blog</a>
+                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">back</a>
                 </section>
             `;
 
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('back-to-blog').addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.hash = ''; // Clear hash
-                loadContent('words.html');
+                loadContent('words.html'); // back to page
             });
 
         } catch (error) {
