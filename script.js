@@ -231,39 +231,3 @@ function closeLightbox() {
     document.getElementById('lightbox-image').src = '';
 }
 
-// =================================================================
-// BLOG SECTION
-// =================================================================
-
-  const container = document.getElementById('blog-posts-container');
-
-  // SAFEGUARD: If we aren't on the blog page, stop running this code!
-  if (!container) return;
-
-  fetch('posts.json')
-    .then(response => {
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return response.json();
-    })
-    .then(posts => {
-      container.innerHTML = ''; // Clear loading text
-
-      posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.style.marginBottom = '30px';
-
-        postElement.innerHTML = `
-          <h3 style="margin-bottom: 5px;"><b style="color: Aqua;">${post.title}</b></h3>
-          <p><small style="color: #aaa;">${post.date}</small></p>
-          <p>${post.content}</p>
-          <br>
-        `;
-
-        container.appendChild(postElement);
-      });
-    })
-    .catch(error => {
-      console.error('Error loading posts:', error);
-      container.innerHTML = '<p><small>Unable to load posts.</small></p>';
-    });
-});
