@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error fetching blog posts:', error);
-            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
+            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts...</small></p>`;
         }
     }
 
