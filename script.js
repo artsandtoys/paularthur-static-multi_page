@@ -31,6 +31,37 @@ document.addEventListener('DOMContentLoaded', () => {
         rightColumn.innerHTML = ''; 
     }
 
+    // Helper function to fetch & populate posts when blog.html loads
+    async function populateBlogPosts() {
+        const container = document.getElementById('blog-posts-container');
+        if (!container) return;
+
+        try {
+            const response = await fetch('posts.json');
+            if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
+            
+            const posts = await response.json();
+            container.innerHTML = ''; // Clear "Loading more..." text
+
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.style.marginBottom = '30px';
+
+                postElement.innerHTML = `
+                    <h3 style="margin-bottom: 5px;"><b style="color: Aqua;">${post.title}</b></h3>
+                    <p><small style="color: #aaa;">${post.date}</small></p>
+                    <p style="color: #ddd;">${post.content}</p>
+                    <br>
+                `;
+
+                container.appendChild(postElement);
+            });
+        } catch (error) {
+            console.error('Error fetching blog posts:', error);
+            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
+        }
+    }
+
     async function loadContent(fileName) {
         hideDefaultContent(); 
         
@@ -43,6 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = htmlContent;
             window.scrollTo(0, 0); 
+
+            // If we just loaded blog.html, fetch & render posts.json
+            if (fileName === 'blog.html' || document.getElementById('blog-posts-container')) {
+                await populateBlogPosts();
+            }
 
             // Re-attach gallery triggers for dynamically loaded content
             attachGalleryTriggers(); 
@@ -194,20 +230,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 // =================================================================
 // SECONDARY LIGHTBOX FUNCTIONS (FOR SNAPS GRID CONTENT)
 // =================================================================
 
-/**
- * Opens the simple grid lightbox for either direct media or grid-item wrappers.
- * @param {HTMLElement} element 
- */
 function openLightbox(element) {
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
 
-    // Target either the media element directly or locate it inside .grid-item
     const target = element.querySelector ? (element.querySelector('img, video') || element) : element;
     const fullSrc = target.getAttribute('data-full-src');
     
@@ -221,13 +251,9 @@ function openLightbox(element) {
     document.body.style.overflow = 'hidden'; 
 }
 
-/**
- * Closes the simple grid lightbox.
- */
 function closeLightbox() {
     const lightbox = document.getElementById('lightbox');
     lightbox.style.display = 'none';
     document.body.style.overflow = '';
     document.getElementById('lightbox-image').src = '';
 }
-
