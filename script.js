@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('back-to-blog').addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.hash = ''; // Clear hash
-                loadContent('blog.html');
+                loadContent('works.html');
             });
 
         } catch (error) {
