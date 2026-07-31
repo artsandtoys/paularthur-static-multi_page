@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
+                // BLOG PAGE
                 postElement.innerHTML = `
                     <p class="post-date">${post.date}</p>
                     <h3 class="post-title"><b>${post.title}</b></h3>
@@ -127,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.scrollTo(0, 0);
 
+            // BLOG POST
             rightColumn.innerHTML = `
                 <section class="content-section">
                 <br>
