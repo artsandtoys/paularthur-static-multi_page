@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Fetches post filenames from manifest.json and loads each post JSON file.
-     * Renders summaries and adds "read more..." buttons for full view.
+     * Safely ignores 404s/missing files so remaining posts render without issue.
      */
     async function populateBlogPosts() {
         const container = document.getElementById('blog-posts-container');
@@ -44,37 +44,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // STEP B: Fetch all individual post files concurrently
+            // STEP B: Fetch individual post files concurrently with individual error handling
             const postPromises = postFiles.map(file => 
                 fetch(`./posts/${file}`)
                     .then(res => {
-                        if (!res.ok) throw new Error(`Failed to load posts/${file}`);
+                        if (!res.ok) {
+                            console.warn(`Skipping missing post: ${file}`);
+                            return null;
+                        }
                         return res.json();
                     })
-                    .then(data => ({ filename: file, ...data }))
+                    .then(data => (data ? { filename: file, ...data } : null))
+                    .catch(err => {
+                        console.warn(`Failed to parse or load posts/${file}:`, err);
+                        return null;
+                    })
             );
 
-            const posts = await Promise.all(postPromises);
+            // Wait for all requests to finish and filter out failed requests (nulls)
+            const rawPosts = await Promise.all(postPromises);
+            const posts = rawPosts.filter(post => post !== null);
+
             container.innerHTML = ''; // Clear "Loading..." text
 
-            // STEP C: Render each post snippet into the DOM
+            if (posts.length === 0) {
+                container.innerHTML = '<p><small style="color: #aaa;">No valid posts available.</small></p>';
+                return;
+            }
+
+            // STEP C: Render each successfully loaded post snippet into the DOM
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.style.marginBottom = '30px';
 
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
-                // BLOG POST SHORT
                 postElement.innerHTML = `
-                    <p><style="color: #aaa;">${post.date}</style></p>
+                    <p><span style="color: #aaa;">${post.date}</span></p>
                     <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
-                    <p style="color: #ddd;">
+                    <div style="color: #ddd;">
                         ${post.summary || post.content}
                         ${hasMore ? `
                             <br><br>
-                    <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
+                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
                         ` : ''}
-                    </p>
+                    </div>
                     <br>
                 `;
 
@@ -113,15 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.scrollTo(0, 0);
 
-            // BLOG POST FULL
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <p><style="color: #aaa;">${post.date}</style></p>
+                    <p><span style="color: #aaa;">${post.date}</span></p>
                     <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
                     <div style="color: #ddd; line-height: 1.5;">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
                     </div>
+                    <br>
                     <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">back</a>
                 </section>
             `;
@@ -154,12 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideDefaultContent() {
         if (defaultSplash) defaultSplash.style.display = 'none';
         if (staticFooter) staticFooter.style.display = 'none';
-        
         rightColumn.innerHTML = ''; 
     }
 
     /**
-     * Loads dynamic HTML files (like intro.html, blog.html, music.html) into .right-column-wrapper
+     * Loads dynamic HTML files into .right-column-wrapper
      * @param {string} fileName - The HTML snippet file to load.
      */
     async function loadContent(fileName) {
@@ -228,10 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             video.style.maxHeight = '100%';
             popup.insertBefore(video, insertionPoint);
 
-            video.addEventListener('error', (ev) => console.warn('Video error', ev));
-            video.play().catch(err => {
-                console.warn('Play promise rejected:', err);
-            });
+            video.play().catch(err => console.warn('Autoplay prevented:', err));
         } else {
             const img = document.createElement('img');
             img.src = src;
@@ -251,20 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const prevBtn = popup.querySelector('#prevBtn');
         const nextBtn = popup.querySelector('#nextBtn');
-        
-        const galleryTriggerHandler = function(e) {
-            e.preventDefault();
-            
-            currentGallery = e.currentTarget.dataset.images.split(',').map(x => x.trim()).filter(x => x.length);
-            currentIndex = 0;
-            
-            showMedia(popup, prevBtn, nextBtn, currentIndex);
-            popup.style.display = 'flex';
-        };
 
         document.querySelectorAll('.gallery-trigger').forEach(item => {
-            item.removeEventListener('click', galleryTriggerHandler); 
-            item.addEventListener('click', galleryTriggerHandler);
+            item.onclick = (e) => {
+                e.preventDefault();
+                currentGallery = e.currentTarget.dataset.images.split(',').map(x => x.trim()).filter(x => x.length);
+                currentIndex = 0;
+                showMedia(popup, prevBtn, nextBtn, currentIndex);
+                popup.style.display = 'flex';
+            };
         });
         
         // Next button handler
@@ -287,8 +292,6 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.onclick = (e) => {
             if (e.target === popup) {
                 popup.style.display = 'none';
-                const vid = popup.querySelector('video');
-                if (vid) vid.pause();
                 clearMedia(popup); 
             }
         };
@@ -308,9 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const prevBtn = popup.querySelector('#prevBtn');
             const nextBtn = popup.querySelector('#nextBtn');
             
-            if (e.key === 'Escape') {
-                popup.click(); 
-            }
+            if (e.key === 'Escape') popup.click(); 
             if (e.key === 'ArrowRight' && nextBtn) nextBtn.click();
             if (e.key === 'ArrowLeft' && prevBtn) prevBtn.click();
         }
@@ -339,14 +340,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize gallery triggers for statically loaded content
     attachGalleryTriggers();
     
-    // Handle direct URL hash loads (e.g., refreshing or directly visiting a post link)
-    if (window.location.hash.startsWith('#post?id=')) {
-        const filename = window.location.hash.replace('#post?id=', '');
-        if (filename) {
-            hideDefaultContent();
-            openPostView(filename);
+    // Helper function for hash-based navigation
+    function handleHashNavigation() {
+        if (window.location.hash.startsWith('#post?id=')) {
+            const filename = window.location.hash.replace('#post?id=', '');
+            if (filename) {
+                hideDefaultContent();
+                openPostView(filename);
+            }
         }
     }
+
+    // Check initial URL hash on load
+    handleHashNavigation();
+
+    // Listen for browser back/forward navigation button clicks
+    window.addEventListener('hashchange', handleHashNavigation);
 
     // Disable right-click context menu site-wide
     document.addEventListener('contextmenu', function(e) {
