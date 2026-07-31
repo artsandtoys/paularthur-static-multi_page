@@ -289,17 +289,14 @@ h1, h2 {
     object-fit: contain;
 }
 
-/* =================================================================
-   BLOG SYSTEM STYLES
-   ================================================================= */
+/* BLOG SYSTEM STYLES */
 
-/* General Text & Metadata */
 .post-date {
     color: #aaa;
 }
 
 .post-title {
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     color: #ffffff !important;
 }
 
@@ -309,11 +306,11 @@ h1, h2 {
 
 .post-body {
     color: #ddd;
-    line-height: 1.5;
+    line-height: 0.0;
 }
 
 .post-item {
-    margin-bottom: 30px;
+    margin-bottom: 00px;
 }
 
 /* Links & Action Buttons */
