@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${post.summary || post.content}
                         ${hasMore ? `
                             <br><br>
-                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}">read more...</a>
+                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}">read more</a>
                         ` : ''}
                     </div>
                     <br>
