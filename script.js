@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const postFiles = await manifestResponse.json();
             
             if (!Array.isArray(postFiles) || postFiles.length === 0) {
-                container.innerHTML = '<p><small style="color: #aaa;">No posts found.</small></p>';
+                container.innerHTML = '<p><small class="blog-status-msg">No posts found.</small></p>';
                 return;
             }
 
@@ -68,25 +68,25 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = ''; // Clear "Loading..." text
 
             if (posts.length === 0) {
-                container.innerHTML = '<p><small style="color: #aaa;">No valid posts available.</small></p>';
+                container.innerHTML = '<p><small class="blog-status-msg">No valid posts available.</small></p>';
                 return;
             }
 
             // STEP C: Render each successfully loaded post snippet into the DOM
             posts.forEach(post => {
                 const postElement = document.createElement('div');
-                postElement.style.marginBottom = '30px';
+                postElement.className = 'post-item';
 
                 const hasMore = Boolean(post.content && post.content.trim().length > 0);
 
                 postElement.innerHTML = `
-                    <p><span style="color: #aaa;">${post.date}</span></p>
-                    <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
-                    <div style="color: #ddd;">
+                    <p class="post-date">${post.date}</p>
+                    <h3 class="post-title"><b>${post.title}</b></h3>
+                    <div class="post-body">
                         ${post.summary || post.content}
                         ${hasMore ? `
                             <br><br>
-                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>
+                            <a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}">read more...</a>
                         ` : ''}
                     </div>
                     <br>
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error fetching blog posts:', error);
-            container.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load posts (${error.message})</small></p>`;
+            container.innerHTML = `<p><small class="blog-error-msg">Unable to load posts (${error.message})</small></p>`;
         }
     }
 
@@ -129,14 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rightColumn.innerHTML = `
                 <section class="content-section">
-                    <p><span style="color: #aaa;">${post.date}</span></p>
-                    <h2 style="color: white !important;"><b style="color: white !important;">${post.title}</b></h2>
-                    <div style="color: #ddd; line-height: 1.5;">
+                    <p class="post-date">${post.date}</p>
+                    <h2 class="post-title"><b>${post.title}</b></h2>
+                    <div class="post-body">
                         ${post.summary ? `<p>${post.summary}</p>` : ''}
                         <p>${post.content}</p>
                     </div>
                     <br>
-                    <a href="#" id="back-to-blog" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">back</a>
+                    <a href="#" id="back-to-blog">back</a>
                 </section>
             `;
 
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error opening full post:', error);
-            rightColumn.innerHTML = `<p><small style="color: #ff6b6b;">Unable to load full post content (${error.message})</small></p>`;
+            rightColumn.innerHTML = `<p><small class="blog-error-msg">Unable to load full post content (${error.message})</small></p>`;
         }
     }
 
@@ -237,8 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             video.muted = true;
             video.loop = true;
             video.playsInline = true;
-            video.style.maxWidth = '100%';
-            video.style.maxHeight = '100%';
+            video.className = 'popup-media';
             popup.insertBefore(video, insertionPoint);
 
             video.play().catch(err => console.warn('Autoplay prevented:', err));
@@ -246,8 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = document.createElement('img');
             img.src = src;
             img.alt = 'Gallery image';
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
+            img.className = 'popup-media';
             popup.insertBefore(img, insertionPoint);
         }
         
