@@ -289,20 +289,6 @@ h1, h2 {
     object-fit: contain;
 }
 
-/* BLOG / NEWS SECTION STYLES */
-#blog-posts-container div {
-    border-bottom: 1px solid #222; /* Subtle divider between posts */
-    padding-bottom: 20px;
-}
-
-#blog-posts-container h3 {
-    margin-bottom: 5px;
-}
-
-#blog-posts-container small {
-    color: #888;
-}
-
 /* MOBILE RESPONSIVE STYLES */
 @media screen and (max-width: 768px) {
     .main-container {
