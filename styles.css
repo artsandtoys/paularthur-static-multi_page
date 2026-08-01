@@ -26,6 +26,10 @@ h1, h2 {
     align-items: flex-start;
 }
 
+a {
+  text-decoration: none;
+}
+
 /* STICKY NAV */
 .left-column {
     flex-basis: 33.33%;
