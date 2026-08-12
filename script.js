@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p><span style="color: #aaa;">${post.dateFormatted}</span></p>
                     <h3 style="margin-bottom: 5px; color: white !important;"><b style="color: white !important;">${post.title}</b></h3>
                     <div style="color: #ddd;">
+                    <br>
                         ${post.summary || post.content}
                         ${(post.hasMore || post.isExternal) ? `
                             <br><br>
