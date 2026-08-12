@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mode: 'both', 
 
         // URL of your Substack or Medium RSS feed
-        rssUrl: 'https://yourusername.substack.com/feed', 
+        rssUrl: 'https://paularthur.substack.com/feed', 
 
         // rss2json.com
         // API proxy that converts raw RSS XML into JSON format on-the-fly
