@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Determine whether to link externally (RSS) or navigate locally via hash (JSON)
                 const readMoreButton = post.isExternal
-                    ? `<a href="${post.url}" target="_blank" rel="noopener noreferrer" class="read-more-btn" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read post...</a>`
-                    : `<a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #b3ff00; text-decoration: underline; cursor: pointer;">read more...</a>`;
+                    ? `<a href="${post.url}" target="_blank" rel="noopener noreferrer" class="read-more-btn" style="color: aqua; text-decoration: underline; cursor: pointer;">read post...</a>`
+                    : `<a href="#post?id=${post.filename}" class="read-more-btn" data-filename="${post.filename}" style="color: #0bf9ea; text-decoration: underline; cursor: pointer;">read more...</a>`;
 
                 // Build HTML layout for each post card
                 postElement.innerHTML = `
