@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('back-to-blog').addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location.hash = ''; // Clear URL hash
-                loadContent('tales.html'); // Reload main blog container page
+                loadContent('talks.html'); // Reload main blog container page
             });
 
         } catch (error) {
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // SECTION 3: PAGE ROUTING / CONTENT LOADING (SPA SYSTEM)
-    // Loads sub-pages dynamically (tales.html, music.html, etc.) via AJAX 
+    // Loads sub-pages dynamically (talks.html, music.html, etc.) via AJAX 
     // without performing a full browser page refresh.
     // =================================================================
 
@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo(0, 0); 
 
             // Trigger blog engine if the loaded file is the blog view
-            if (fileName === 'tales.html' || document.getElementById('blog-posts-container')) {
+            if (fileName === 'talks.html' || document.getElementById('blog-posts-container')) {
                 await populateBlogPosts();
             }
 
