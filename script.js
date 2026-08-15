@@ -1,3 +1,4 @@
+// DOM (Document Object Model) 
 document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
@@ -23,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================
     // SECTION 2: HYBRID BLOG ENGINE (JSON + RSS)
-    // Reads local JSON posts via manifest.json AND pulls external RSS feeds 
-    // (Substack/Medium), merging and sorting them chronologically.
+    // Reads local JSON posts via manifest.json AND 
+    // pulls external RSS feeds (Substack/Medium), 
+    // merging and sorting them chronologically.
     // =================================================================
 
     // Global configuration object for the blog system
