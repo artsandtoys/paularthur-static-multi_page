@@ -81,6 +81,7 @@ a {
     font-weight: bold;
 }
 
+/* RIGHT CONTENT SECTION */
 .right-column-wrapper {
     flex-basis: 66.66%;
     flex-grow: 1;
@@ -119,6 +120,7 @@ a {
     margin-bottom: 16px;
 }
 
+/* RECENT */
 .timeline {
     position: relative;
     padding: 2px 0 0px 30px;
@@ -166,7 +168,7 @@ a {
     color: #ccc;
 }
 
-/* POPUP GALLERY STYLES */
+/* POPUP GALLERY */
 #columnPopup {
     position: fixed; 
     top: 0;
@@ -206,6 +208,7 @@ a {
     z-index: 10000;
 }
 
+/* MULTI IMAGE BUTTONS */
 #prevBtn { left: 30px; }
 #nextBtn { right: 30px; }
 
@@ -213,7 +216,7 @@ a {
     color: #b3ff00;
 }
 
-/* --- GRID CONTAINER & ITEM STYLES --- */
+/* IMAGE/VIDEO GRID */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
@@ -240,14 +243,14 @@ a {
     transition: filter 0.3s ease, transform 0.3s ease;
 }
 
-/* Blur & subtle zoom on hover */
+/* IMG HOVER BLUR */
 .grid-item:hover img,
 .grid-item:hover video {
     filter: blur(4px) brightness(0.7);
     transform: scale(1.03);
 }
 
-/* Overlay Text (Alt Text Display) */
+/* IMG HOVER TEXT (alt text display) */
 .overlay-text {
     position: absolute;
     top: 50%;
@@ -272,7 +275,7 @@ a {
     opacity: 1;
 }
 
-/* LIGHTBOX STYLES */
+/* LIGHTBOX POP UP STYLES */
 .lightbox {
     position: fixed; 
     left: 0;
@@ -293,8 +296,7 @@ a {
     object-fit: contain;
 }
 
-/* BLOG SYSTEM STYLES */
-
+/* BLOG SYSTEM */
 .post-date {
     color: #aaa;
     margin-top: 0;
@@ -318,15 +320,15 @@ a {
     margin-bottom: 05px;
 }
 
-/* Links & Action Buttons */
+/* BLOG BUTTONS */
 .read-more-btn,
 #back-to-blog {
-    color: #b3ff00;
+    color: #b3ff00; /* IS THIS IN USE */
     text-decoration: ;
     cursor: pointer;
 }
 
-/* Status & Message States */
+/* BLOG STATUS */
 .blog-status-msg {
     color: #aaa;
 }
@@ -335,7 +337,7 @@ a {
     color: #ff6b6b;
 }
 
-/* Overlay & Media Sizing */
+/* OVERLAY + MEDIA */
 .popup-media {
     max-width: 100%;
     max-height: 100%;
