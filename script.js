@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Global configuration object for the blog system
     const BLOG_CONFIG = {
-        // Mode options: 'both' (combines JSON & RSS), 'json' (only local), or 'rss' (only RSS)
+        // combines JSON & RSS
         mode: 'both', 
 
-        // URL of your Substack or Medium RSS feed
-        rssUrl: 'https://paularthur.substack.com/feed', 
+        // URL of Substack or Medium RSS feed
+        rssLink: 'https://paularthur.substack.com/feed', 
 
         // rss2json.com
         // API proxy that converts raw RSS XML into JSON format on-the-fly
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!container) return; // Exit gracefully if not on the blog view page
 
         try {
+            // list local var 
             let jsonPosts = [];
             let rssPosts = [];
 
@@ -64,23 +65,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // --- FETCH STEP 2: Load External RSS Feed Posts (if enabled) ---
             if (BLOG_CONFIG.mode === 'both' || BLOG_CONFIG.mode === 'rss') {
-                rssPosts = await fetchRssPosts(BLOG_CONFIG.rssUrl).catch(err => {
+                rssPosts = await fetchRssPosts(BLOG_CONFIG.rssLink).catch(err => {
                     console.warn('Failed to fetch RSS posts:', err);
                     return []; // Return empty array on failure so JSON still works
                 });
             }
 
-            // --- MERGE & SORT STEP: Combine both streams into a single list ---
+            // MERGE & SORT STEP: Combine both streams into a single list 
             const combinedPosts = [...jsonPosts, ...rssPosts];
 
             // Sort posts chronologically: newest publication dates appear first
             combinedPosts.sort((a, b) => new Date(b.rawDate) - new Date(a.rawDate));
 
-            container.innerHTML = ''; // Clear initial "Loading..." message
+            // Clear initial "Loading..."
+            container.innerHTML = ''; 
 
             // Display message if no posts were retrieved from either source
             if (combinedPosts.length === 0) {
-                container.innerHTML = '<p><small style="color: #aaa;">No valid posts available.</small></p>';
+                container.innerHTML = '<p><small style="color: #aaa;">No posts available.</small></p>';
                 return;
             }
 
@@ -169,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * RSS Fetcher: Calls the rss2json service API to pull and convert RSS XML into JSON.
      */
-    async function fetchRssPosts(rssUrl) {
-        const apiUrl = `${BLOG_CONFIG.rssApiEndpoint}${encodeURIComponent(rssUrl)}`;
+    async function fetchRssPosts(rssLink) {
+        const apiUrl = `${BLOG_CONFIG.rssApiEndpoint}${encodeURIComponent(rssLink)}`;
         const response = await fetch(apiUrl);
         if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
 
