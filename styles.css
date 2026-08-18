@@ -136,6 +136,7 @@ a {
     background: #444;
 }
 
+/* for leaving site */
 .timeline-item-link {
     position: relative;
     display: block;
@@ -216,7 +217,7 @@ a {
     color: #b3ff00;
 }
 
-/* IMAGE/VIDEO GRID */
+/* VISUALS GRID */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
