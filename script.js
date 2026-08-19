@@ -474,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// GLOBAL FUNCTIONS
 
 // =================================================================
 // SECTION 6: SECONDARY LIGHTBOX (STANDALONE PHOTO GRID CONTENT)
